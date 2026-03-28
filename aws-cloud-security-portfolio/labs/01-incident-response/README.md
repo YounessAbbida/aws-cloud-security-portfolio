@@ -4,7 +4,7 @@
 
 **Frameworks:** NIST, PCI-DSS
 
-Screenshots below are mirrored from the public Notion page into this repo under [`../../assets/images/lab01-ec2-compromise/`](../../assets/images/lab01-ec2-compromise/).
+Screenshots for this lab are stored in this repo under [`../../assets/images/lab01-ec2-compromise/`](../../assets/images/lab01-ec2-compromise/).
 
 ---
 
