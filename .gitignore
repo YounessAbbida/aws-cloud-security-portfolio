@@ -1,3 +1,6 @@
+# Local landing page (open from disk or private host only — not published)
+/index.html
+
 # Cursor local AI rules and workspace metadata
 .cursor/
 
