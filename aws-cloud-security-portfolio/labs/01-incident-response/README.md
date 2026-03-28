@@ -1,9 +1,5 @@
 # Lab 01 - EC2 Compromise Investigation
 
-**Live notes (Notion):** [AWS Security Labs Portfolio](https://www.notion.so/AWS-Security-Labs-Portfolio-292570094627807c827ccf2b6991b096) → *1. Incident Response* → *Lab 01 - EC2 Compromise Investigation*
-
-**Official lab:** [AWS Skill Builder — Security Engineer Advanced Learning Plan (includes labs)](https://skillbuilder.aws/learning-plan/NTDPRSFC3F/aws-security-engineer-advanced-learning-plan-includes-labs/VUD51DEB41)
-
 **AWS services:** EC2, GuardDuty, CloudTrail (plus S3, EBS, CloudWatch Logs, Systems Manager, Lambda, EventBridge, IAM as used in the walkthrough)
 
 **Frameworks:** NIST, PCI-DSS
