@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youness Abbida — Cloud &amp; Security IT Engineer</title>
+<meta name="description" content="Youness Abbida — IT Analyst (Air Arabia). AWS Solutions Architect – Associate. Microsoft 365, Entra ID, Defender. Hands-on AWS security labs: IR, encryption, network security, compliance.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:        #07090e;
+  --bg2:       #0c0f17;
+  --bg3:       #111520;
+  --surface:   #141926;
+  --border:    #1c2436;
+  --border2:   #243048;
+  --cyan:      #00d9ff;
+  --cyan-dim:  rgba(0,217,255,.12);
+  --cyan-glow: rgba(0,217,255,.25);
+  --amber:     #ff9640;
+  --amber-dim: rgba(255,150,64,.1);
+  --green:     #3ddc84;
+  --red:       #ff4d6a;
+  --text:      #dce6f0;
+  --muted:     #5a6a82;
+  --muted2:    #8899b0;
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'Syne', sans-serif;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor, #cursor-ring {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity .3s;
+}
+#cursor {
+  width: 6px; height: 6px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+#cursor-ring {
+  width: 28px; height: 28px;
+  border: 1px solid rgba(0,217,255,.5);
+  transition: transform .15s ease, width .2s, height .2s;
+}
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring {
+  width: 44px; height: 44px;
+  border-color: var(--cyan);
+}
+
+/* ── GRID BACKGROUND ── */
+#grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,217,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,217,255,.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+#grid-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,217,255,.04) 0%, transparent 70%);
+}
+
+/* ── SCAN LINE ── */
+@keyframes scan {
+  0%   { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+#scanline {
+  position: fixed;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,217,255,.06), transparent);
+  pointer-events: none;
+  z-index: 1;
+  animation: scan 8s linear infinite;
+}
+
+/* ── LAYOUT ── */
+main { position: relative; z-index: 2; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+section { padding: 7rem 0; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(7,9,14,.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-size: .85rem;
+  color: var(--cyan);
+  letter-spacing: .05em;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--muted); }
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--muted2);
+  text-decoration: none;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--green);
+  letter-spacing: .05em;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; box-shadow: 0 0 4px var(--green); }
+  50%      { opacity: .4; box-shadow: none; }
+}
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--cyan);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fade-up .6s .2s forwards;
+}
+.hero-name {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--text);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fade-up .7s .35s forwards;
+}
+.hero-name em {
+  font-style: normal;
+  color: var(--cyan);
+  text-shadow: 0 0 40px rgba(0,217,255,.35);
+}
+.hero-role {
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  color: var(--muted2);
+  margin-bottom: 2rem;
+  min-height: 1.6em;
+  opacity: 0;
+  animation: fade-up .7s .5s forwards;
+}
+#typed-text { color: var(--amber); }
+.cursor-blink {
+  display: inline-block;
+  width: 2px; height: 1.1em;
+  background: var(--amber);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink .85s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.hero-desc {
+  max-width: 560px;
+  color: var(--muted2);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fade-up .7s .65s forwards;
+}
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fade-up .7s .8s forwards;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1.75rem;
+  background: var(--cyan);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  border-radius: 2px;
+  cursor: none;
+  transition: box-shadow .2s, transform .15s;
+}
+.btn-primary:hover {
+  box-shadow: 0 0 24px rgba(0,217,255,.4);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1.75rem;
+  background: transparent;
+  color: var(--muted2);
+  font-family: var(--mono);
+  font-size: .8rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  cursor: none;
+  transition: color .2s, border-color .2s;
+}
+.btn-ghost:hover {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+/* Hero right — animated terminal */
+.hero-terminal {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 380px;
+  opacity: 0;
+  animation: fade-left .8s 1s forwards;
+  display: none;
+}
+@media (min-width: 1000px) { .hero-terminal { display: block; } }
+.terminal-bar {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: .6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red    { background: #ff5f57; }
+.t-dot.yellow { background: #febc2e; }
+.t-dot.green  { background: #28c840; }
+.terminal-title {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--muted);
+  margin-left: auto;
+  letter-spacing: .05em;
+}
+.terminal-body {
+  background: rgba(12,15,23,.95);
+  border: 1px solid var(--border2);
+  border-radius: 0 0 6px 6px;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 2;
+}
+.t-line { display: flex; gap: .5rem; }
+.t-prompt { color: var(--cyan); flex-shrink: 0; }
+.t-cmd   { color: var(--text); }
+.t-out   { color: var(--muted2); padding-left: 1rem; }
+.t-ok    { color: var(--green); }
+.t-warn  { color: var(--amber); }
+@keyframes t-reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.t-line:nth-child(1)  { animation: t-reveal .3s 1.4s both; }
+.t-line:nth-child(2)  { animation: t-reveal .3s 1.9s both; }
+.t-line:nth-child(3)  { animation: t-reveal .3s 2.1s both; }
+.t-line:nth-child(4)  { animation: t-reveal .3s 2.4s both; }
+.t-line:nth-child(5)  { animation: t-reveal .3s 2.7s both; }
+.t-line:nth-child(6)  { animation: t-reveal .3s 3.0s both; }
+.t-line:nth-child(7)  { animation: t-reveal .3s 3.3s both; }
+.t-line:nth-child(8)  { animation: t-reveal .3s 3.6s both; }
+.t-line:nth-child(9)  { animation: t-reveal .3s 3.9s both; }
+.t-line:nth-child(10) { animation: t-reveal .3s 4.1s both; }
+
+/* hero corner decoration */
+.hero-corner {
+  position: absolute;
+  bottom: 3rem;
+  right: 2rem;
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--border2);
+  letter-spacing: .1em;
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fade-up .6s 1.2s forwards;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: none; }
+}
+@keyframes fade-left {
+  from { opacity:0; transform: translateY(-50%) translateX(20px); }
+  to   { opacity:1; transform: translateY(-50%) translateX(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--cyan);
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.section-label::before {
+  content: '//';
+  color: var(--muted);
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2), transparent);
+  max-width: 120px;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+/* ── ABOUT ── */
+#about { border-top: 1px solid var(--border); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+.about-text p {
+  color: var(--muted2);
+  margin-bottom: 1.25rem;
+  line-height: 1.85;
+}
+.about-text p strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.about-text a {
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,217,255,.3);
+  transition: border-color .2s;
+}
+.about-text a:hover { border-color: var(--cyan); }
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.skill-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  transition: border-color .2s, background .2s;
+}
+.skill-card:hover {
+  border-color: var(--border2);
+  background: var(--bg3);
+}
+.skill-tag {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--cyan);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.skill-items {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--muted2);
+  line-height: 1.9;
+}
+.skill-items span {
+  display: block;
+}
+
+/* ── CERTIFICATIONS ── */
+#certifications { border-top: 1px solid var(--border); }
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+a.cert-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.cert-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .25s, transform .2s;
+}
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.cert-card:hover { border-color: rgba(0,217,255,.3); transform: translateY(-3px); }
+.cert-card:hover::before { opacity: 1; }
+.cert-card.active { border-color: rgba(61,220,132,.2); }
+.cert-card.active::before { background: linear-gradient(90deg, transparent, var(--green), transparent); opacity: 1; }
+.cert-card.in-progress { border-color: rgba(255,150,64,.15); }
+.cert-card.in-progress::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); opacity: 1; }
+.cert-icon {
+  width: 48px; height: 48px;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+.cert-icon svg { width: 100%; height: 100%; }
+.cert-status {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: .25rem .7rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: 1rem;
+}
+.cert-status.active   { background: rgba(61,220,132,.1); color: var(--green); border: 1px solid rgba(61,220,132,.2); }
+.cert-status.progress { background: rgba(255,150,64,.1); color: var(--amber); border: 1px solid rgba(255,150,64,.2); }
+.cert-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .4rem;
+  line-height: 1.3;
+}
+.cert-code {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+}
+.cert-corner {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--muted);
+}
+
+/* ── LABS ── */
+#labs { border-top: 1px solid var(--border); }
+.labs-intro {
+  max-width: 600px;
+  color: var(--muted2);
+  margin-bottom: 3rem;
+  line-height: 1.8;
+}
+.labs-intro a {
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,217,255,.3);
+}
+.labs-intro a:hover { border-color: var(--cyan); }
+.labs-intro code {
+  font-family: var(--mono);
+  font-size: .85em;
+  background: var(--bg3);
+  padding: .1rem .35rem;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+
+.domain-tabs {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.domain-tab {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .45rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  border-radius: 2px;
+  cursor: none;
+  transition: all .2s;
+}
+.domain-tab.active, .domain-tab:hover {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+.lab-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.75rem;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .25s, transform .2s, background .2s;
+  cursor: none;
+}
+.lab-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 110%, var(--cyan-dim), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.lab-card:hover {
+  border-color: rgba(0,217,255,.35);
+  transform: translateY(-3px);
+}
+.lab-card:hover::after { opacity: 1; }
+.lab-id {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--cyan);
+  letter-spacing: .2em;
+  margin-bottom: .75rem;
+  text-transform: uppercase;
+}
+.lab-domain-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .2rem .6rem;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+.badge-ir     { background: rgba(255,77,106,.1); color: #ff4d6a; border: 1px solid rgba(255,77,106,.2); }
+.badge-dp     { background: rgba(0,217,255,.1); color: var(--cyan); border: 1px solid rgba(0,217,255,.2); }
+.badge-ns     { background: rgba(255,150,64,.1); color: var(--amber); border: 1px solid rgba(255,150,64,.2); }
+.badge-gv     { background: rgba(61,220,132,.1); color: var(--green); border: 1px solid rgba(61,220,132,.2); }
+
+.lab-title {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .75rem;
+  line-height: 1.4;
+}
+.lab-desc {
+  font-size: .85rem;
+  color: var(--muted2);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+.lab-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+.service-tag {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--muted);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: .2rem .55rem;
+  border-radius: 2px;
+  letter-spacing: .05em;
+}
+.lab-arrow {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  color: var(--muted);
+  font-size: .85rem;
+  transition: color .2s, transform .2s;
+}
+.lab-card:hover .lab-arrow {
+  color: var(--cyan);
+  transform: translate(3px, -3px);
+}
+
+/* ── CONTACT ── */
+#contact { border-top: 1px solid var(--border); }
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+.contact-desc {
+  color: var(--muted2);
+  line-height: 1.85;
+  margin-bottom: 2rem;
+}
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color .2s, background .2s, transform .15s;
+  cursor: none;
+}
+.contact-link:hover {
+  border-color: var(--border2);
+  background: var(--bg3);
+  transform: translateX(4px);
+}
+.contact-link-icon {
+  width: 36px; height: 36px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: .9rem;
+}
+.contact-link-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: .15rem;
+}
+.contact-link-value {
+  font-size: .9rem;
+  color: var(--text);
+}
+.contact-link:hover .contact-link-value { color: var(--cyan); }
+
+/* ── STATS BLOCK ── */
+.stats-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2rem;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.stat-item { }
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: .35rem;
+  letter-spacing: -.03em;
+}
+.stat-value em {
+  font-style: normal;
+  color: var(--cyan);
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.stats-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.5rem 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0;
+  position: relative;
+  z-index: 2;
+}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+}
+.footer-copy span { color: var(--cyan); }
+.footer-built {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- BACKGROUND -->
+<div id="grid-bg"></div>
+<div id="scanline"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo"><span>~/</span>younessabbida</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#certifications">Certs</a></li>
+      <li><a href="#labs">Labs</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="status-dot"></div>
+      Open to opportunities
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Cloud &amp; Security-focused IT Engineer</p>
+      <h1 class="hero-name">Youness<br><em>Abbida</em></h1>
+      <p class="hero-role">
+        $ <span id="typed-text"></span><span class="cursor-blink"></span>
+      </p>
+      <p class="hero-desc">
+        <strong>IT Analyst</strong> supporting global enterprise IT in aviation — <strong>Microsoft 365</strong>,
+        <strong>Entra ID</strong>, <strong>Microsoft Defender</strong>, and hybrid operations. 
+        <strong style="color:var(--text)">AWS Certified Solutions Architect – Associate</strong>.
+        This site highlights my screenshot-backed <strong style="color:var(--text)">AWS security lab portfolio</strong>
+        (incident response, encryption, network controls, governance).
+      </p>
+      <div class="hero-actions">
+        <a href="#labs" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12H2M22 12l-7-7M22 12l-7 7"/></svg>
+          View Labs
+        </a>
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+        <a href="#contact" class="btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Let's Talk
+        </a>
+      </div>
+    </div>
+
+    <!-- Terminal widget -->
+    <div class="hero-terminal">
+      <div class="terminal-bar">
+        <div class="t-dot red"></div>
+        <div class="t-dot yellow"></div>
+        <div class="t-dot green"></div>
+        <span class="terminal-title">security-audit — zsh</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">➜</span><span class="t-cmd">aws guardduty list-findings \</span></div>
+        <div class="t-line"><span class="t-prompt"> </span><span class="t-cmd">  --detector-id $DETECTOR_ID</span></div>
+        <div class="t-line"><span class="t-out">{ "FindingIds": ["abc123..."] }</span></div>
+        <div class="t-line" style="margin-top:.5rem"><span class="t-prompt">➜</span><span class="t-cmd">aws securityhub get-findings</span></div>
+        <div class="t-line"><span class="t-out t-ok">✓ HIGH: UnauthorizedAccess:EC2</span></div>
+        <div class="t-line"><span class="t-out t-warn">⚠ MED: Recon:EC2/PortProbe</span></div>
+        <div class="t-line" style="margin-top:.5rem"><span class="t-prompt">➜</span><span class="t-cmd">aws kms describe-key \</span></div>
+        <div class="t-line"><span class="t-prompt"> </span><span class="t-cmd">  --key-id alias/prod-cmk</span></div>
+        <div class="t-line"><span class="t-out t-ok">✓ KeyState: Enabled — CMK active</span></div>
+        <div class="t-line"><span class="t-out t-ok">✓ KeyRotation: Annual rotation set</span></div>
+      </div>
+    </div>
+
+    <div class="hero-corner">Casablanca–Settat · Morocco · AWS · Enterprise IT</div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p class="section-label">About</p>
+          <h2 class="section-title">Enterprise IT &amp;<br>cloud security practice</h2>
+          <p>I'm an <strong>IT Analyst</strong> with <strong>Air Arabia</strong>, part of a global IT organization securing and operating environments across international hubs — with emphasis on <strong>reliability</strong>, <strong>security</strong>, and <strong>business continuity</strong>.</p>
+          <p>Day to day I work with <strong>Microsoft 365</strong>, <strong>Entra ID (Azure AD)</strong>, <strong>Microsoft Defender</strong>, and <strong>Windows Server</strong>, alongside cloud and hybrid troubleshooting. I hold <strong>AWS Certified Solutions Architect – Associate</strong> (valid through Aug 2028) and document hands-on <strong>AWS security labs</strong> in my public portfolio.</p>
+          <p>Previously I was an <strong>Operations Engineer</strong> at <strong>Atos</strong>, supporting production environments for enterprise clients under strict SLAs — including automation with <strong>Bash</strong> and ITIL-oriented operations.</p>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="skills-grid">
+            <div class="skill-card">
+              <div class="skill-tag">Detection</div>
+              <div class="skill-items">
+                <span>Amazon GuardDuty</span>
+                <span>AWS Security Hub</span>
+                <span>CloudWatch Logs</span>
+                <span>CloudTrail</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Protection</div>
+              <div class="skill-items">
+                <span>AWS KMS</span>
+                <span>Secrets Manager</span>
+                <span>S3 policies</span>
+                <span>AWS WAF</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Network</div>
+              <div class="skill-items">
+                <span>VPC / NACLs</span>
+                <span>Network Firewall</span>
+                <span>PrivateLink</span>
+                <span>Transit Gateway</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Governance</div>
+              <div class="skill-items">
+                <span>AWS Config</span>
+                <span>Organizations</span>
+                <span>Control Tower</span>
+                <span>SCPs</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Microsoft enterprise</div>
+              <div class="skill-items">
+                <span>Microsoft 365</span>
+                <span>Entra ID (Azure AD)</span>
+                <span>Microsoft Defender</span>
+                <span>Windows Server</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Automation</div>
+              <div class="skill-items">
+                <span>EventBridge</span>
+                <span>Lambda</span>
+                <span>Systems Manager</span>
+                <span>Bash</span>
+              </div>
+            </div>
+            <div class="skill-card">
+              <div class="skill-tag">Frameworks</div>
+              <div class="skill-items">
+                <span>NIST 800-53</span>
+                <span>CIS AWS v2.0</span>
+                <span>MITRE ATT&CK</span>
+                <span>PCI-DSS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CERTIFICATIONS ── -->
+  <section id="certifications">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Certifications</p>
+        <h2 class="section-title">Certifications &amp; education</h2>
+      </div>
+      <div class="cert-grid">
+        <!-- SAA-C03 — Active -->
+        <a href="https://cp.certmetrics.com/amazon/en/public/verify/credential" target="_blank" rel="noopener noreferrer" class="cert-card active reveal reveal-delay-1">
+          <div class="cert-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="8" fill="rgba(61,220,132,.1)"/>
+              <path d="M24 8L38 16V32L24 40L10 32V16L24 8Z" fill="none" stroke="#3ddc84" stroke-width="1.5"/>
+              <path d="M24 14L33 19V29L24 34L15 29V19L24 14Z" fill="rgba(61,220,132,.15)" stroke="#3ddc84" stroke-width="1"/>
+              <circle cx="24" cy="24" r="4" fill="#3ddc84"/>
+            </svg>
+          </div>
+          <div class="cert-status active">
+            <div class="status-dot" style="width:5px;height:5px;animation-duration:2.5s;"></div>
+            Active
+          </div>
+          <p class="cert-name">AWS Certified Solutions Architect – Associate</p>
+          <p class="cert-code">SAA-C03 · Issued Aug 2025 · Valid through Aug 2028</p>
+          <span class="cert-corner">↗ Verify on CertMetrics</span>
+        </a>
+
+        <!-- Education highlight -->
+        <div class="cert-card reveal reveal-delay-2">
+          <div class="cert-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="8" fill="rgba(255,150,64,.1)"/>
+              <path d="M24 8L38 16V32L24 40L10 32V16L24 8Z" fill="none" stroke="#ff9640" stroke-width="1.5"/>
+              <path d="M20 22L16 24L20 26" stroke="#ff9640" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M28 22L32 24L28 26" stroke="#ff9640" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M25.5 20L22.5 28" stroke="#ff9640" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="cert-status" style="background:rgba(255,150,64,.1);color:var(--amber);border:1px solid rgba(255,150,64,.2);">
+            Education
+          </div>
+          <p class="cert-name">Master’s — Security &amp; automation of IT architectures &amp; cloud (ENSI)</p>
+          <p class="cert-code">Bachelor’s — System administration &amp; cybersecurity (ESTC)</p>
+          <span class="cert-corner">Morocco</span>
+        </div>
+
+        <!-- Portfolio labs -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/tree/main/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" class="cert-card reveal reveal-delay-3">
+          <div class="cert-icon">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="8" fill="rgba(0,217,255,.08)"/>
+              <rect x="12" y="20" width="24" height="16" rx="2" stroke="var(--cyan)" stroke-width="1.5"/>
+              <path d="M18 20V16C18 13.8 19.8 12 22 12H26C28.2 12 30 13.8 30 16V20" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="24" cy="28" r="2.5" fill="var(--cyan)"/>
+            </svg>
+          </div>
+          <div class="cert-status" style="background:rgba(0,217,255,.08);color:var(--cyan);border:1px solid rgba(0,217,255,.2);">
+            Public repo
+          </div>
+          <p class="cert-name">AWS Security Labs Portfolio</p>
+          <p class="cert-code">5 documented write-ups · 4 tracks (IR, encryption, network, governance)</p>
+          <span class="cert-corner">↗ GitHub</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LABS ── -->
+  <section id="labs">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Portfolio</p>
+        <h2 class="section-title">Security labs</h2>
+        <p class="labs-intro">
+          Each write-up is <strong>screenshot-backed</strong> and stored in-repo so it renders reliably on GitHub.
+          Topics span <strong>incident response</strong>, <strong>KMS/S3 encryption</strong>, <strong>VPC &amp; Network Firewall</strong>,
+          and <strong>AWS Config</strong> compliance — with NIST / PCI-DSS framing where noted in the docs.
+          Open the <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/tree/main/aws-cloud-security-portfolio/labs" target="_blank" rel="noopener noreferrer"><code>labs/</code> folder on GitHub →</a>
+          or jump to a lab below.
+        </p>
+      </div>
+
+      <div class="domain-tabs reveal">
+        <button class="domain-tab active" onclick="filterLabs('all', this)">All Domains</button>
+        <button class="domain-tab" onclick="filterLabs('ir', this)">Incident Response</button>
+        <button class="domain-tab" onclick="filterLabs('dp', this)">Data Protection</button>
+        <button class="domain-tab" onclick="filterLabs('ns', this)">Network Security</button>
+        <button class="domain-tab" onclick="filterLabs('gv', this)">Governance</button>
+      </div>
+
+      <div class="lab-grid" id="lab-grid">
+
+        <!-- Lab 01 — EC2 compromise IR -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/labs/01-incident-response/README.md"
+           target="_blank" rel="noopener noreferrer" class="lab-card" data-domain="ir">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-id">Lab 01</div>
+          <div class="lab-domain-badge badge-ir">Incident Response</div>
+          <p class="lab-title">EC2 compromise investigation</p>
+          <p class="lab-desc">Respond to a suspected compromised instance: capture metadata and EBS evidence, isolate the host, review logs, harden configuration, and build automated IR with EventBridge and Lambda (NIST / PCI-DSS framing).</p>
+          <div class="lab-services">
+            <span class="service-tag">EC2</span>
+            <span class="service-tag">GuardDuty</span>
+            <span class="service-tag">CloudTrail</span>
+            <span class="service-tag">SSM</span>
+            <span class="service-tag">Lambda</span>
+          </div>
+        </a>
+
+        <!-- Lab 02 — KMS & S3 -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/labs/02-data-protection-encryption/README.md"
+           target="_blank" rel="noopener noreferrer" class="lab-card" data-domain="dp">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-id">Lab 02</div>
+          <div class="lab-domain-badge badge-dp">Data Protection</div>
+          <p class="lab-title">KMS CMK &amp; S3 encryption enforcement</p>
+          <p class="lab-desc">Defense in depth for object storage: CMK with rotation, SSE-KMS on the bucket, and a bucket policy that denies uploads unless the correct KMS encryption context is used.</p>
+          <div class="lab-services">
+            <span class="service-tag">KMS</span>
+            <span class="service-tag">S3</span>
+            <span class="service-tag">IAM</span>
+            <span class="service-tag">EC2</span>
+          </div>
+        </a>
+
+        <!-- Lab 03A — VPC S3 access point -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/labs/03-network-security/lab-03a-vpc-only-s3-access-point-gateway-endpoint-bucket-policy.md"
+           target="_blank" rel="noopener noreferrer" class="lab-card" data-domain="ns">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-id">Lab 03A</div>
+          <div class="lab-domain-badge badge-ns">Network Security</div>
+          <p class="lab-title">VPC-only S3 access point &amp; gateway endpoint</p>
+          <p class="lab-desc">Restrict S3 access to your VPC using an access point, VPC gateway endpoint, and bucket policy — private connectivity patterns for sensitive object storage.</p>
+          <div class="lab-services">
+            <span class="service-tag">VPC</span>
+            <span class="service-tag">S3</span>
+            <span class="service-tag">IAM</span>
+            <span class="service-tag">Endpoints</span>
+          </div>
+        </a>
+
+        <!-- Lab 03B — Network Firewall -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/labs/03-network-security/lab-03b-network-firewall-threat-hunting.md"
+           target="_blank" rel="noopener noreferrer" class="lab-card" data-domain="ns">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-id">Lab 03B</div>
+          <div class="lab-domain-badge badge-ns">Network Security</div>
+          <p class="lab-title">Network Firewall threat hunting</p>
+          <p class="lab-desc">Inspect and control egress traffic with AWS Network Firewall, correlate DNS / IDS-style findings, and practice threat-hunting workflows in the lab VPC.</p>
+          <div class="lab-services">
+            <span class="service-tag">Network Firewall</span>
+            <span class="service-tag">VPC</span>
+            <span class="service-tag">Route 53</span>
+            <span class="service-tag">CloudWatch</span>
+          </div>
+        </a>
+
+        <!-- Lab 04 — AWS Config -->
+        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/labs/04-governance-compliance-strategy/README.md"
+           target="_blank" rel="noopener noreferrer" class="lab-card" data-domain="gv">
+          <span class="lab-arrow">↗</span>
+          <div class="lab-id">Lab 04</div>
+          <div class="lab-domain-badge badge-gv">Governance</div>
+          <p class="lab-title">AWS Config compliance &amp; remediation</p>
+          <p class="lab-desc">Inventory resources, apply managed rules, detect drift, and trigger automated remediation — GRC-oriented continuous compliance for EC2, S3, and related controls.</p>
+          <div class="lab-services">
+            <span class="service-tag">AWS Config</span>
+            <span class="service-tag">SSM</span>
+            <span class="service-tag">EC2</span>
+            <span class="service-tag">S3</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="reveal">
+          <p class="section-label">Contact</p>
+          <h2 class="section-title">Let's connect</h2>
+          <p class="contact-desc">
+            <strong>Location:</strong> Casablanca–Settat, Morocco · <strong>Open to</strong> remote or hybrid roles aligned with cloud security, cloud architecture, and secure enterprise IT.
+            Full résumé-style profile: <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio/blob/main/aws-cloud-security-portfolio/ABOUT_ME.md" target="_blank" rel="noopener noreferrer" style="color:var(--cyan);">ABOUT_ME.md on GitHub</a>.
+          </p>
+          <div class="contact-links">
+            <a href="https://www.linkedin.com/in/youness-abbida-71916424a" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <div class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </div>
+              <div>
+                <p class="contact-link-label">LinkedIn</p>
+                <p class="contact-link-value">linkedin.com/in/youness-abbida-71916424a</p>
+              </div>
+            </a>
+            <a href="https://github.com/YounessAbbida" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <div class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+              </div>
+              <div>
+                <p class="contact-link-label">GitHub</p>
+                <p class="contact-link-value">github.com/YounessAbbida</p>
+              </div>
+            </a>
+            <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <div class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+              </div>
+              <div>
+                <p class="contact-link-label">Portfolio repo</p>
+                <p class="contact-link-value">aws-cloud-security-portfolio</p>
+              </div>
+            </a>
+            <a href="mailto:younessabbida77@gmail.com" class="contact-link">
+              <div class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <p class="contact-link-label">Email</p>
+                <p class="contact-link-value">younessabbida77@gmail.com</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <div class="stats-block">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">4<em>+</em></div>
+                <div class="stat-label">Security domains</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">5<em>+</em></div>
+                <div class="stat-label">Hands-on labs</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1<em>✓</em></div>
+                <div class="stat-label">AWS certification</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">15<em>+</em></div>
+                <div class="stat-label">AWS services covered</div>
+              </div>
+            </div>
+            <div class="stats-divider"></div>
+            <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);line-height:1.85;">
+              <div style="color:var(--cyan);margin-bottom:.35rem;">// Frameworks referenced in lab write-ups</div>
+              <div><span style="color:var(--text);">NIST</span> · IR &amp; security architecture themes (Lab 01–02)</div>
+              <div><span style="color:var(--text);">PCI-DSS</span> · Data protection &amp; key management (Labs 01–02)</div>
+              <div><span style="color:var(--text);">GRC / continuous compliance</span> · AWS Config (Lab 04)</div>
+              <div style="margin-top:.5rem;color:var(--muted2);font-size:.68rem;">Percent bars removed — see GitHub for scope per lab.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <p class="footer-copy">
+        © 2026 <span>Youness Abbida</span> — Cloud &amp; Security-focused IT Engineer
+      </p>
+      <p class="footer-built">
+        Portfolio: <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" style="color:var(--muted2);">github.com/YounessAbbida/aws-cloud-security-portfolio</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  rx += (mx - rx) * .14;
+  ry += (my - ry) * .14;
+  cur.style.left  = mx + 'px';
+  cur.style.top   = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+/* ── TYPEWRITER ── */
+const roles = [
+  'it analyst @ air arabia',
+  'cloud & security engineer',
+  'aws solutions architect — associate',
+  'm365 · entra id · defender',
+];
+let ri = 0, ci = 0, deleting = false, pause = 0;
+const typed = document.getElementById('typed-text');
+function typewrite() {
+  if (pause > 0) { pause--; setTimeout(typewrite, 80); return; }
+  const word = roles[ri];
+  if (!deleting && ci <= word.length) {
+    typed.textContent = word.slice(0, ci++);
+    setTimeout(typewrite, ci === word.length + 1 ? 10 : 80);
+    if (ci === word.length + 1) { pause = 22; deleting = true; }
+  } else if (deleting && ci >= 0) {
+    typed.textContent = word.slice(0, ci--);
+    setTimeout(typewrite, 45);
+    if (ci < 0) { deleting = false; ri = (ri + 1) % roles.length; ci = 0; pause = 6; }
+  }
+}
+setTimeout(typewrite, 1200);
+
+/* ── SCROLL REVEAL ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── LAB FILTER ── */
+function filterLabs(domain, btn) {
+  document.querySelectorAll('.domain-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.lab-card').forEach(card => {
+    const show = domain === 'all' || card.dataset.domain === domain;
+    card.style.display = show ? 'block' : 'none';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(12px)';
+    if (show) setTimeout(() => {
+      card.style.transition = 'opacity .3s ease, transform .3s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'none';
+    }, 50);
+  });
+}
+
+/* ── SMOOTH NAV LINKS ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
