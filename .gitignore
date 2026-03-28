@@ -1,2 +1,31 @@
-# Cursor local AI rules and workspace metadata — keep out of public clone
+# Cursor local AI rules and workspace metadata
 .cursor/
+
+# OS junk (should never be in a public repo)
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.stackdump
+
+# Secrets and local environment (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*id_rsa*
+*id_ed25519*
+*.p12
+*.pfx
+secrets.json
+credentials.json
+.aws/credentials
+
+# Editor / IDE (local preferences)
+*.swp
+*.swo
+*~
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
