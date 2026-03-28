@@ -177,6 +177,70 @@ nav {
   position: relative;
   overflow: hidden;
 }
+@media (min-width: 1000px) {
+  #hero .container {
+    padding-right: 420px;
+  }
+}
+.hero-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .hero-col-text { text-align: center; }
+  .hero-actions { justify-content: center; }
+  .hero-desc { margin-left: auto; margin-right: auto; }
+}
+.hero-profile-column {
+  opacity: 0;
+  animation: fade-up .65s .15s forwards;
+}
+.hero-profile-wrap {
+  position: relative;
+  width: clamp(200px, 32vw, 300px);
+  height: clamp(200px, 32vw, 300px);
+  flex-shrink: 0;
+}
+.hero-profile-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--cyan), rgba(0,217,255,.15) 45%, transparent 70%);
+  z-index: 0;
+  opacity: .85;
+}
+.hero-profile-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,217,255,.12);
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-profile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  border-radius: 50%;
+  display: block;
+  z-index: 1;
+  border: 3px solid var(--surface);
+  box-shadow:
+    0 0 0 1px rgba(0,217,255,.25),
+    0 20px 50px rgba(0,0,0,.45);
+  filter: contrast(1.04) saturate(1.02);
+}
 .hero-eyebrow {
   font-family: var(--mono);
   font-size: .75rem;
@@ -439,7 +503,6 @@ nav {
   transition: border-color .2s;
 }
 .about-text a:hover { border-color: var(--cyan); }
-
 .skills-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -855,31 +918,47 @@ footer {
   <!-- ── HERO ── -->
   <section id="hero">
     <div class="container">
-      <p class="hero-eyebrow">Cloud &amp; Security-focused IT Engineer</p>
-      <h1 class="hero-name">Youness<br><em>Abbida</em></h1>
-      <p class="hero-role">
-        $ <span id="typed-text"></span><span class="cursor-blink"></span>
-      </p>
-      <p class="hero-desc">
-        <strong>IT Analyst</strong> supporting global enterprise IT in aviation — <strong>Microsoft 365</strong>,
-        <strong>Entra ID</strong>, <strong>Microsoft Defender</strong>, and hybrid operations. 
-        <strong style="color:var(--text)">AWS Certified Solutions Architect – Associate</strong>.
-        This site highlights my screenshot-backed <strong style="color:var(--text)">AWS security lab portfolio</strong>
-        (incident response, encryption, network controls, governance).
-      </p>
-      <div class="hero-actions">
-        <a href="#labs" class="btn-primary">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12H2M22 12l-7-7M22 12l-7 7"/></svg>
-          View Labs
-        </a>
-        <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" class="btn-ghost">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          GitHub
-        </a>
-        <a href="#contact" class="btn-ghost">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Let's Talk
-        </a>
+      <div class="hero-layout">
+        <div class="hero-profile-column">
+          <div class="hero-profile-wrap">
+            <img
+              src="aws-cloud-security-portfolio/assets/images/photo.jpg"
+              alt="Youness Abbida — Cloud &amp; Security-focused IT Engineer"
+              class="hero-profile"
+              width="300"
+              height="300"
+              loading="eager"
+              decoding="async">
+          </div>
+        </div>
+        <div class="hero-col-text">
+          <p class="hero-eyebrow">Cloud &amp; Security-focused IT Engineer</p>
+          <h1 class="hero-name">Youness<br><em>Abbida</em></h1>
+          <p class="hero-role">
+            $ <span id="typed-text"></span><span class="cursor-blink"></span>
+          </p>
+          <p class="hero-desc">
+            <strong>Cloud Security Engineer</strong> supporting global enterprise IT in aviation — <strong>Microsoft 365</strong>,
+            <strong>IAM</strong>, <strong>Microsoft Defender</strong>, and hybrid operations.
+            <strong style="color:var(--text)">AWS Certified Solutions Architect – Associate</strong>.
+            This site highlights my screenshot-backed <strong style="color:var(--text)">AWS security lab portfolio</strong>
+            (incident response, encryption, network controls, governance).
+          </p>
+          <div class="hero-actions">
+            <a href="#labs" class="btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12H2M22 12l-7-7M22 12l-7 7"/></svg>
+              View Labs
+            </a>
+            <a href="https://github.com/YounessAbbida/aws-cloud-security-portfolio" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              GitHub
+            </a>
+            <a href="#contact" class="btn-ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Let's Talk
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1287,10 +1366,10 @@ animCursor();
 
 /* ── TYPEWRITER ── */
 const roles = [
-  'it analyst @ air arabia',
-  'cloud & security engineer',
-  'aws solutions architect — associate',
-  'm365 · entra id · defender',
+  'Cloud Security Engineer',
+  'Experience with Atos and Air Arabia',
+  'AWS Solutions Architect - Associate',
+  'M365 · ENTRA ID · Microsoft Defender',
 ];
 let ri = 0, ci = 0, deleting = false, pause = 0;
 const typed = document.getElementById('typed-text');
