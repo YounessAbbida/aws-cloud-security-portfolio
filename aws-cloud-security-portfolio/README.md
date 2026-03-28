@@ -2,6 +2,8 @@
 
 Hands-on AWS security lab write-ups with screenshots stored in-repo for reliable viewing (e.g., on GitHub).
 
+**Recruiters & hiring managers:** see **[`ABOUT_ME.md`](ABOUT_ME.md)** for experience, certifications, orientation, and contact links.
+
 ## Contents
 
 | Track | Path |
