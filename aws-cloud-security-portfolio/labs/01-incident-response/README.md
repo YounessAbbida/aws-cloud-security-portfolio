@@ -1,18 +1,26 @@
 # Lab 01 - EC2 Compromise Investigation
 
-**Source:** [AWS Skill Builder — Security Engineer Advanced Learning Plan (includes labs)](https://skillbuilder.aws/learning-plan/NTDPRSFC3F/aws-security-engineer-advanced-learning-plan-includes-labs/VUD51DEB41)
+**Live notes (Notion):** [AWS Security Labs Portfolio](https://www.notion.so/AWS-Security-Labs-Portfolio-292570094627807c827ccf2b6991b096) → *1. Incident Response* → *Lab 01 - EC2 Compromise Investigation*
 
-**Frameworks referenced:** NIST, PCI-DSS
+**Official lab:** [AWS Skill Builder — Security Engineer Advanced Learning Plan (includes labs)](https://skillbuilder.aws/learning-plan/NTDPRSFC3F/aws-security-engineer-advanced-learning-plan-includes-labs/VUD51DEB41)
 
-> Screenshots from this lab can be stored under [`../../assets/images/`](../../assets/images/) for your portfolio.
+**AWS services:** EC2, GuardDuty, CloudTrail (plus S3, EBS, CloudWatch Logs, Systems Manager, Lambda, EventBridge, IAM as used in the walkthrough)
+
+**Frameworks:** NIST, PCI-DSS
+
+Screenshots below are mirrored from the public Notion page into this repo under [`../../assets/images/lab01-ec2-compromise/`](../../assets/images/lab01-ec2-compromise/).
 
 ---
 
 ## Overview
 
-This lab places you on an incident response team responding to a potential compromise of an Amazon EC2 application server. The scenario begins with an alert driven by **multiple failed SSH login attempts**. Your job is to follow a disciplined process: **preserve evidence**, **analyze whether a breach occurred**, **reduce attack surface**, and **automate repeatable response** so similar events are handled consistently.
+In this lab, you act as a member of the incident response team after an alert about a possible **compromised EC2 instance**. You respond using processes and techniques for **investigation**, **analysis**, and **lessons learned**.
 
-You work as a security engineer at **AnyCompany**, investigating an application server while balancing forensic integrity, operational safety, and stakeholder communication.
+As a security engineer at **AnyCompany**, you are alerted to a potential breach on an application server where **multiple failed login attempts** were detected. You must **safely analyze** the instance to determine whether a breach occurred, **address vulnerabilities** that contributed to it, and perform **remediation**.
+
+![Lab context — overview](../../assets/images/lab01-ec2-compromise/01-overview-01.png)
+
+![Lab context — scenario](../../assets/images/lab01-ec2-compromise/02-overview-02.png)
 
 ---
 
@@ -21,139 +29,188 @@ You work as a security engineer at **AnyCompany**, investigating an application 
 By the end of this lab, you should be able to:
 
 - Capture compromised instance **metadata** and **persistent disks**
-- Create a **snapshot** of the compromised instance’s volumes
+- Create a **snapshot** of the compromised instance
 - **Isolate** the instance and protect against **accidental termination**
-- Review **system and security-relevant logs** to validate a suspected breach
-- **Harden** instance access (e.g., move from SSH to **AWS Systems Manager Session Manager**)
-- Design and validate **automated incident response** for repeated indicators (e.g., SSH auth failures)
+- Review **system logs** to validate the suspected breach
+- **Update instance settings** to mitigate a vulnerability
+- Create **automated incident response** for similar incidents in the future
 
 ---
 
 ## AWS Services Used
 
-| Category | Services |
-| -------- | -------- |
-| Compute & storage | **Amazon EC2**, **Amazon EBS** (snapshots), **Amazon S3** (IR/evidence bucket) |
-| Detection & logging | **Amazon GuardDuty** (context in learning path), **AWS CloudTrail**, **Amazon CloudWatch Logs** |
-| Operations & automation | **AWS Systems Manager** (Run Command, Session Manager), **AWS Lambda**, **Amazon EventBridge** |
-| Identity | **IAM** (instance profiles / roles) |
+| Area | Services |
+| ---- | -------- |
+| Compute & storage | **Amazon EC2**, **Amazon EBS** (snapshots), **Amazon S3** (IR / evidence bucket) |
+| Detection & audit | **Amazon GuardDuty**, **AWS CloudTrail** |
+| Logging | **Amazon CloudWatch Logs** |
+| Operations | **AWS Systems Manager** (Run Command, Session Manager) |
+| Automation | **AWS Lambda**, **Amazon EventBridge** |
+| Access | **IAM** (instance profiles / roles), **security groups** |
 
 ---
 
 ## Step-by-Step Walkthrough
 
-### Phase 1 — Preserve evidence and isolate the instance
+### Task 1 — Capture compromised disks and metadata
 
-1. **Capture metadata and disk-related artifacts**  
-   Collect instance metadata and upload forensic-relevant data to a designated **S3** bucket (e.g., IR bucket) per lab instructions.
+**Task 1.1–1.2: Capture persistent disk / metadata and upload to S3**
 
-2. **Enable termination protection**  
-   On the compromised instance, enable **termination protection** to prevent accidental destruction during investigation.
+![Metadata and disk capture — EC2 / console](../../assets/images/lab01-ec2-compromise/03-task1-metadata.png)
 
-3. **Capture disks (and memory strategy)**  
-   - Take an **EBS snapshot** of the compromised volume.  
-   - For **memory capture**, the lab emphasizes using **third-party tools** (e.g., approaches compatible with **LiME** on Linux) while avoiding risky direct interactive shell work that could alter state.  
-   - **AWS Systems Manager Run Command** is used to invoke the **SSM Agent** on the host so scripts can run **without** ad-hoc SSH sessions that might contaminate the forensic picture. After capture, another snapshot can include the memory dump artifacts on disk.
+Upload forensic-related data to the **IR S3 bucket**:
 
-4. **Optional: Stand up a copy for analysis**  
-   Deploy a **new instance from the captured snapshot** if you need an isolated environment for deeper examination.
+![Upload evidence to S3 (1)](../../assets/images/lab01-ec2-compromise/04-task1-s3-upload-01.png)
 
-5. **Tag, decommission, and isolate**  
-   - Tag the instance (e.g., **`Status=Quarantined`**).  
-   - **Remove the IAM instance profile** from the affected instance to limit lateral movement via credentials.  
-   - Attach a **quarantine security group** to restrict network connectivity.
+![Upload evidence to S3 (2)](../../assets/images/lab01-ec2-compromise/05-task1-s3-upload-02.png)
 
-**Phase 1 completion checklist (from lab):**
+**Task 1.3: Enable termination protection** on the compromised instance.
+
+![Termination protection enabled](../../assets/images/lab01-ec2-compromise/06-task1-3-termination-protection.png)
+
+**Task 1.4: Capture instance memory and disks**
+
+EBS **snapshot** of the compromised volume:
+
+![EBS snapshot of compromised volume](../../assets/images/lab01-ec2-compromise/07-task1-4-ebs-snapshot.png)
+
+For **memory**, the lab uses **third-party tools** on the instance (e.g., approaches involving **LiME** on Linux). After capture, you can take **another snapshot** that includes the memory dump on disk.
+
+You normally avoid ad-hoc **interactive SSH** on a suspect host because it can **change state** and affect forensics. **AWS Systems Manager Run Command** invokes the **SSM Agent** to run scripts remotely—reducing direct interactive access while still executing capture tooling.
+
+**Task 1.5 (optional):** Deploy a **new instance** from the captured snapshot for isolated analysis.
+
+![Optional: instance from snapshot / AMI workflow](../../assets/images/lab01-ec2-compromise/08-task1-5-optional-restore.png)
+
+**Task 1.6: Tag, decommission, and isolate**
+
+- Tag the instance (e.g., **`Status=Quarantined`**).
+
+![Quarantine tag on instance](../../assets/images/lab01-ec2-compromise/09-task1-6-quarantine-tag.png)
+
+- **Remove** the **IAM instance profile** from the instance.
+
+![Remove IAM instance profile](../../assets/images/lab01-ec2-compromise/10-task1-6-remove-iam-role.png)
+
+- Move the instance to a **quarantine security group**.
+
+![Quarantine security group applied](../../assets/images/lab01-ec2-compromise/11-task1-6-quarantine-sg.png)
+
+**Task 1 complete:**
 
 - Captured compromised instance metadata  
 - Enabled termination protection  
-- Captured disks into a snapshot (and related image workflow as required)  
+- Captured disks to snapshot (and optional image for analysis)  
 - Tagged, decommissioned, and isolated the instance  
 
 ---
 
-### Phase 2 — Investigate using logs and indicators
+### Task 2 — Investigate using system logs
 
-Review host and supporting telemetry to confirm or refute compromise. Example findings documented in the lab:
+Review logs and indicators. Example findings:
 
 | Indicator | Severity |
 | --------- | -------- |
 | New privileged user | **HIGH** |
 | Password authentication enabled | **MEDIUM–HIGH** |
-| SSH service restarts | **MEDIUM** |
-| Internal brute-force activity | **HIGH** |
-| CloudWatch agent creation | **Normal** (context-dependent) |
+| SSH restarts | **MEDIUM** |
+| Internal brute force | **HIGH** |
+| CloudWatch agent creation | **Normal** |
 
-**Remediation direction (stakeholder recommendation):**
+![Log / investigation screenshot](../../assets/images/lab01-ec2-compromise/12-task2-log-review.png)
 
-- **Disable and block SSH** on this server where policy allows.  
-- Prefer **AWS Systems Manager Session Manager** for access: **no inbound SSH**, **IAM-controlled** access, and **auditable** via **CloudTrail**.
-
----
-
-### Phase 3 — Mitigate the vulnerability (hardening)
-
-1. **Attach SSM permissions to the instance profile**  
-   Grant the instance an **IAM role** with permissions required for **SSM** (per lab policy). **Reboot** if needed so the agent picks up the new role capabilities.
-
-2. **Remove inbound SSH from the security group**  
-   Remove the SSH rule and transition off the **quarantine** security group when the instance is ready to return to a controlled, least-privilege posture (per lab steps).
-
-3. **Validate via Session Manager**  
-   Connect through **SSM Session Manager**, confirm remediation, and **remove the quarantine tag** when appropriate.
+**Recommendation:** Disable and block **SSH** where appropriate, and use **AWS Systems Manager Session Manager** for access—**no inbound SSH**, **IAM-controlled** access, auditable via **CloudTrail**.
 
 ---
 
-### Phase 4 — Automate incident response
+### Task 3 — Mitigate the vulnerability
 
-End-to-end flow (as built in the lab):
+**Task 3.1: Add SSM permissions to the instance profile (IAM role)** so the instance can use **Session Manager**.
 
-1. **Simulated SSH failures** originate from a **jump server** toward an **app server**.  
-2. The app server emits **SSH authentication failure** logs to a **CloudWatch Logs** log group.  
-3. A **subscription filter** on the log group forwards matching events to a **Log Enrichment Lambda**.  
-4. The enrichment function resolves the **internal IP** to an **instance ID** and sends a structured event to **Amazon EventBridge**.  
-5. An **EventBridge rule** invokes an **Automation Lambda** that performs **runbook-style** actions.
+![SSM-capable instance profile / role](../../assets/images/lab01-ec2-compromise/13-task3-1-ssm-instance-profile.png)
 
-**Automated actions validated on a second instance (`app-server-2`):**
+Attach the role to the instance and **reboot** if needed so permissions take effect.
 
-- Capture metadata and upload to the **IR S3 bucket**  
+![Reboot after role attachment](../../assets/images/lab01-ec2-compromise/14-task3-1-reboot.png)
+
+**Task 3.2:** Remove **inbound SSH** from the security group and transition off the **quarantine** security group per lab steps.
+
+![Security group rules updated](../../assets/images/lab01-ec2-compromise/15-task3-2-security-groups.png)
+
+**Task 3.3:** Connect via **Session Manager**, validate remediation, and **remove the quarantine tag** when appropriate.
+
+![Session Manager session](../../assets/images/lab01-ec2-compromise/16-task3-3-session-manager.png)
+
+---
+
+### Task 4 — Automated incident response
+
+**Architecture (high level):**
+
+- **Jump server** simulates **SSH authentication failures** against an **app server**.  
+- The app server sends **SSH auth failure** logs to **CloudWatch Logs**.  
+- A **subscription filter** forwards matches to a **Log Enrichment Lambda**.  
+- The Lambda resolves **internal IP → instance ID** and sends an event to **EventBridge**.  
+- An **EventBridge rule** invokes an **Automation Lambda** that performs containment steps.
+
+![End-to-end automation overview](../../assets/images/lab01-ec2-compromise/17-task4-pipeline-overview.png)
+
+**EventBridge / Lambda (source side):**
+
+![EventBridge source and Lambda](../../assets/images/lab01-ec2-compromise/18-task4-eventbridge-lambda-source.png)
+
+**Automation target:**
+
+![Automation Lambda as rule target](../../assets/images/lab01-ec2-compromise/19-task4-automation-lambda-target.png)
+
+**Task 4.2: Test against another instance (`app-server-2`)**
+
+If automation is correct, the response should:
+
+- Capture metadata and upload to **IR-Bucket**  
 - Enable **termination protection**  
-- Create a **volume snapshot**  
-- Apply **`Status: Quarantine`** (or equivalent) tag  
-- **Detach/remove** the current **IAM role** from the instance  
-- Replace the application security group with **Quarantine-SG**
+- Snapshot the instance volume  
+- Apply **`Status: Quarantine`** tag  
+- Remove the current **IAM role**  
+- Replace **App-server-2-SG** with **Quarantine-SG**
 
-**Validation:** Trigger failed SSH attempts from the jump server and confirm the workflow completes (metadata in S3, tags, and security group updates).
+Trigger failed SSH attempts from the **jump server**:
+
+![Failed SSH attempts from jump server](../../assets/images/lab01-ec2-compromise/20-task4-2-trigger-from-jump-server.png)
+
+**Result:** Automation runs successfully.
+
+**Metadata in S3:**
+
+![IR bucket — captured metadata](../../assets/images/lab01-ec2-compromise/21-task4-2-s3-metadata-captured.png)
+
+**Instance tags:**
+
+![Quarantine tags on instance](../../assets/images/lab01-ec2-compromise/22-task4-2-quarantine-tags.png)
+
+**Security group isolation:**
+
+![Quarantine security group applied](../../assets/images/lab01-ec2-compromise/23-task4-2-quarantine-sg-applied.png)
 
 ---
 
 ## Security Insights & Best Practices
 
-- **Evidence first:** Snapshots, metadata export to S3, and termination protection reduce the risk of losing artifacts during a live investigation.  
-- **Minimize live “hands on” compromise:** Prefer **SSM Run Command** over interactive SSH on a suspect host when you need controlled execution with less impact on volatile state.  
-- **Isolate before you dig:** Quarantine **security groups**, **IAM profile removal**, and clear **tags** improve clarity for operations and downstream forensics.  
-- **Reduce remote access risk:** **Session Manager** avoids opening **SSH** to the internet or broad CIDRs, ties access to **IAM**, and improves **auditability**.  
-- **Automate the boring and critical parts:** **CloudWatch Logs → Lambda → EventBridge** patterns scale detection-to-response and reduce mean time to contain **MTTC** for repetitive abuse signals (e.g., brute force).  
-- **Map to frameworks:** NIST incident handling phases (preparation, detection, analysis, containment, eradication, recovery) and PCI-DSS expectations around logging, access control, and timely response align well with this workflow.
+- **Preserve evidence early:** snapshots, metadata in **S3**, and **termination protection** reduce accidental loss during IR.  
+- **Limit interactive access** on suspect hosts; prefer **SSM Run Command** / **Session Manager** for controlled, auditable execution.  
+- **Contain deliberately:** quarantine **security groups**, **strip instance profiles** that enable lateral movement, and use **tags** for workflow state.  
+- **Shrink attack surface:** removing **SSH** in favor of **Session Manager** improves **network posture** and **auditability**.  
+- **Automate repeatable containment** for high-volume signals (e.g., brute force) using **CloudWatch Logs → Lambda → EventBridge**.  
+- **Align to NIST / PCI-DSS:** map actions to detection, containment, eradication, recovery, and logging/access-control expectations.
 
 ---
 
 ## AWS Security Specialty Exam Relevance
 
-This lab reinforces topics that commonly appear on the **AWS Certified Security — Specialty** exam, including:
-
-- **Incident response** on AWS (containment, forensics-friendly procedures)  
-- **Logging and monitoring** (CloudTrail, CloudWatch Logs, subscription filters)  
-- **Infrastructure security** (security groups, EC2 hardening, least-privilege network paths)  
-- **Identity and access** (IAM roles for EC2, Session Manager prerequisites)  
-- **Automated security operations** (Lambda, EventBridge, guardrails vs. manual runbooks)
-
-Use it to connect **book knowledge** to **ordered procedures**: what you lock first, what you preserve, and how you prove the story with logs.
+Reinforces **incident response**, **logging and monitoring**, **infrastructure security**, **IAM**, and **event-driven automation** on AWS—typical themes for the **AWS Certified Security — Specialty** exam.
 
 ---
 
 ## Personal Reflections
 
-Working through a full **preserve → analyze → remediate → automate** loop made the tradeoffs concrete: snapshots and S3 uploads feel slow until you imagine explaining to leadership why evidence disappeared. The lab’s emphasis on **not** defaulting to SSH on a suspect box matched real IR discipline—**Run Command** and **Session Manager** are not just convenience features, they are **control and evidence** features.
-
-Building the **CloudWatch → Lambda → EventBridge** pipeline was the most satisfying checkpoint: seeing **SSH failure noise** turn into **consistent containment actions** showed how security engineering scales. If I revisit this write-up, I would add **explicit runbook IDs**, **RTO/RPO assumptions**, and **a table mapping each automated action to a NIST phase** so the narrative reads equally well to technical and GRC audiences.
+Completing the full **preserve → investigate → harden → automate** arc made tradeoffs tangible: evidence steps feel slow until you treat them as **non-negotiable** for credible IR. The lab’s push away from default **SSH** on compromised systems matches real **forensic hygiene**. Building **CloudWatch → Lambda → EventBridge** containment showed how **consistent, scripted response** scales beyond manual runbooks—something worth documenting with explicit **runbook IDs** and **NIST phase mapping** for stakeholders.
