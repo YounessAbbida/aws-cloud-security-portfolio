@@ -8,7 +8,7 @@ Hands-on AWS security lab write-ups with screenshots stored in-repo for reliable
 | ----- | ---- |
 | 1. Incident Response | [`labs/01-incident-response/`](labs/01-incident-response/) |
 | 2. Data Protection & Encryption | [`labs/02-data-protection-encryption/`](labs/02-data-protection-encryption/) |
-| 3. Network Security | [`labs/03-network-security/`](labs/03-network-security/) |
+| 3. Network Security | [`labs/03-network-security/README.md`](labs/03-network-security/README.md) (index) · [03A](labs/03-network-security/lab-03a-vpc-only-s3-access-point-gateway-endpoint-bucket-policy.md) · [03B](labs/03-network-security/lab-03b-network-firewall-threat-hunting.md) |
 | 4. Governance, Compliance & Strategy | [`labs/04-governance-compliance-strategy/`](labs/04-governance-compliance-strategy/) |
 
 ## Image assets
