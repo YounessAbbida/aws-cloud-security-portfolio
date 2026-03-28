@@ -10,9 +10,7 @@
 | -------- | ------------- |
 | **LinkedIn** | [linkedin.com/in/youness-abbida-71916424a](https://www.linkedin.com/in/youness-abbida-71916424a) |
 | **GitHub** | Profile: [github.com/YounessAbbida](https://github.com/YounessAbbida) · This repo: [aws-cloud-security-portfolio](https://github.com/YounessAbbida/aws-cloud-security-portfolio) |
-| **Email** | *Add or confirm your preferred address before publishing (e.g. from your CV).* |
-
-*Tip: Pin this repository or add a short “About” on your GitHub profile pointing here so recruiters land on one page with labs + this profile.*
+| **Email** | younessabbida77@gmail.com |
 
 ---
 
