@@ -28,9 +28,3 @@ Casablanca-Settat, Morocco · Open to remote and hybrid roles
 Labs, images, and **ABOUT_ME.md** are inside the **aws-cloud-security-portfolio** folder. Open that folder on GitHub if the root only shows one directory.
 
 ---
-
-## Profile page (github.com/YounessAbbida)
-
-The README on **this** repository is not shown on your **user profile**. For the profile banner above pinned repos, create a **separate** public repository named **YounessAbbida** (exactly your username) and add a **README.md** at its root. You can copy the **Navigate** section from this file into that README.
-
-No extra folder is needed inside **aws-cloud-security-portfolio** for that.
