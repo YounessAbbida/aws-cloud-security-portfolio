@@ -29,3 +29,7 @@ credentials.json
 *.log
 *.tmp
 *.temp
+
+# Personal landing page lives in github.com/YounessAbbida/personal_site — keep this repo labs/docs only
+/index.html
+/logo.svg
